@@ -74,12 +74,11 @@ func getBestGain(samples [][]interface{}, c int, samples_labels []float64, colum
 	best_gain := 0.0
 	best_total_r := 0
 	best_total_l := 0
-
 	uniq_values := make(map[interface{}]int)
-	// for i := 0; i < len(samples); i++ {
-	// 	// ss :=
-	// 	uniq_values[samples[i][c]] = 1
-	// }
+	for i := 0; i < len(samples); i++ {
+		// ss :=
+		uniq_values[samples[i][c]] = 1
+	}
 
 	for value, _ := range uniq_values {
 		labels_l := make([]float64, 0)
@@ -150,11 +149,13 @@ func splitSamples(samples [][]interface{}, column_type string, c int, value inte
 }
 
 func buildTree(samples [][]interface{}, samples_labels []float64, selected_feature_count int) *TreeNode {
-	//fmt.Println(len(samples))
+	// fmt.Println(len(samples))
 	//find a best splitter
-	//fmt.Println(samples)
+	// fmt.Println(samples)
 	//fmt.Println("~~~~")
 	column_count := len(samples[0])
+	//ini harusnya 6
+	// fmt.Println(len(samples[0]))
 	//split_count := int(math.Log(float64(column_count)))
 	split_count := selected_feature_count
 	columns_choosen := getRandomRange(column_count, split_count)
@@ -250,8 +251,9 @@ func BuildTree(inputs [][]interface{}, labels []float64, samples_count, selected
 		samples_labels[i] = labels[j]
 	}
 
-	//fmt.Println(samples)
+	// fmt.Println(len(samples))
 	tree := &Tree{}
+
 	tree.Root = buildTree(samples, samples_labels, selected_feature_count)
 	return tree
 }

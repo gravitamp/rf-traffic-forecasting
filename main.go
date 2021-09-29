@@ -1,10 +1,3 @@
-// Here is the process for ARIMA: 1. Detrend / transform your data
-// 2. Test for stationarity
-// 3. Run autocorrelation plots
-// 4. Set your parameters for your model
-// 5. Run a grid search if you want
-// 6. Look at RMSE
-
 // Here is the process for Random Forest: 1. You still have to transform your data
 // 2. You still have to test for stationarity
 // 3. You have to think about creating a bunch of useful features like season, time of day, t-1, t-7, t-14,
@@ -40,31 +33,22 @@ func main() {
 	// fmt.Println("banyak output: ", len(train))
 
 	// // split into input and output columns
-	// dipisahkan pasangan input dan output
 	count := len(vehiclestrain) - 6
 	train_inputs := make([][]interface{}, count)
 	train_targets := make([]float64, count)
 
 	for i := 0; i < count; i++ {
-		train_inputs[i] = []interface{}{vehiclestrain[i : i+6]}
+		train_inputs[i] = []interface{}{vehiclestrain[i], vehiclestrain[i+1],
+			vehiclestrain[i+2], vehiclestrain[i+3], vehiclestrain[i+4], vehiclestrain[i+5]}
 		train_targets[i] = vehiclestrain[i+6]
 	}
 	forest := BuildForest(train_inputs, train_targets, count, len(train_inputs), 1)
 	// fmt.Println(forest)
-	y := []interface{}{vehiclestest[10:16]}
-	fmt.Println(y[0], "predicted: ", forest.Predicate(y), "test: ", vehiclestest[17])
+	y := []interface{}{vehiclestest[0], vehiclestest[1],
+		vehiclestest[2], vehiclestest[3], vehiclestest[4], vehiclestest[5]}
 
-	// // fit model
-	// kalau di py pakai RandomForestRegressor
-	// model = RandomForestRegressor(n_estimators=1000)
-	// model.fit(trainX, trainy)
+	fmt.Println(y, "predicted: ", forest.Predicate(y), "test: ", vehiclestest[6])
 
-	// // construct an input for a new prediction
-	// bikin 6 input untuk mengetahui output
-	// test := series_to_supervised(vehiclestest)
-
-	// // make a one-step prediction
-	// fmt.Println(round(model.Predicate(test)) )
 }
 
 func setupData(file string) {
