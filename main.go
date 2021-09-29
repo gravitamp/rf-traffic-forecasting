@@ -16,13 +16,10 @@ import (
 	"strconv"
 )
 
-var datatrain [][]float64
 var vehiclestrain []float64
 var datetrain []string
 var vehiclestest []float64
 var datetest []string
-var inputTrain [][]float64
-var outputTrain []float64
 
 func main() {
 	// setup and split dataset
