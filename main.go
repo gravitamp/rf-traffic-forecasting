@@ -51,8 +51,8 @@ func main() {
 	}
 	forest := BuildForest(train_inputs, train_targets, count, len(train_inputs), 1)
 	// fmt.Println(forest)
-	y := []interface{}{vehiclestest[0:6]}
-	fmt.Println(y[0], forest.Predicate(y))
+	y := []interface{}{vehiclestest[10:16]}
+	fmt.Println(y[0], "predicted: ", forest.Predicate(y), "test: ", vehiclestest[17])
 
 	// // fit model
 	// kalau di py pakai RandomForestRegressor
