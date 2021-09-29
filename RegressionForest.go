@@ -1,5 +1,7 @@
 package main
 
+// from https://github.com/fxsjy/RF.go
+
 import (
 	"encoding/json"
 	"fmt"

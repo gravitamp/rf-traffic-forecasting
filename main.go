@@ -44,10 +44,10 @@ func main() {
 	}
 	forest := BuildForest(train_inputs, train_targets, count, len(train_inputs), 1)
 	// fmt.Println(forest)
-	y := []interface{}{vehiclestest[0], vehiclestest[1],
-		vehiclestest[2], vehiclestest[3], vehiclestest[4], vehiclestest[5]}
+	y := []interface{}{vehiclestest[40], vehiclestest[41],
+		vehiclestest[42], vehiclestest[43], vehiclestest[44], vehiclestest[45]}
 
-	fmt.Println(y, "predicted: ", forest.Predicate(y), "test: ", vehiclestest[6])
+	fmt.Println(y, "predicted: ", forest.Predicate(y), "test: ", vehiclestest[46])
 
 }
 

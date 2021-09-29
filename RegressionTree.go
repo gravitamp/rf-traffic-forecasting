@@ -1,6 +1,8 @@
 //a random forest implemtation in GoLang
 package main
 
+// from https://github.com/fxsjy/RF.go
+
 import (
 	"math/rand"
 	//"fmt"
