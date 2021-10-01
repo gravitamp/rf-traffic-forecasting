@@ -14,16 +14,25 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"time"
+
+	"gonum.org/v1/plot"
+	"gonum.org/v1/plot/plotter"
+	"gonum.org/v1/plot/plotutil"
+	"gonum.org/v1/plot/vg"
 )
 
-var vehiclestrain []float64
-var datetrain []string
-var vehiclestest []float64
-var datetest []string
+var (
+	vehiclestrain []float64
+	datetrain     []float64
+	vehiclestest  []float64
+	datetest      []float64
+	forecast      []float64
+)
 
 func main() {
 	// setup and split dataset
-	setupData("trafficall1.csv")
+	setupData("Metro_Interstate_Traffic_Volume.csv")
 
 	// // transform the time series data into supervised learning
 	// train := series_to_supervised(vehiclestrain)
@@ -41,11 +50,38 @@ func main() {
 	}
 	forest := BuildForest(train_inputs, train_targets, count, len(train_inputs), 1)
 	// fmt.Println(forest)
-	y := []interface{}{vehiclestest[40], vehiclestest[41],
-		vehiclestest[42], vehiclestest[43], vehiclestest[44], vehiclestest[45]}
+
+	//testing
+	y := []interface{}{vehiclestest[0], vehiclestest[1],
+		vehiclestest[2], vehiclestest[3], vehiclestest[4], vehiclestest[5]}
 
 	fmt.Println(y, "predicted: ", forest.Predicate(y), "test: ", vehiclestest[46])
 
+	count2 := len(vehiclestest) - 6
+	for i := 0; i < count2; i++ {
+		predict := []interface{}{vehiclestest[i], vehiclestest[i+1],
+			vehiclestest[i+2], vehiclestest[i+3], vehiclestest[i+4], vehiclestest[i+5]}
+		forecast = append(forecast, forest.Predicate(predict))
+
+	}
+
+	p := plot.New()
+	p.Title.Text = "Traffic Volume Forecasting"
+	p.X.Label.Text = "X"
+	p.Y.Label.Text = "Y"
+
+	err := plotutil.AddLinePoints(p,
+		"Train", makePoints(vehiclestrain, datetrain),
+		"Test", makePoints(vehiclestest, datetest),
+		"Predict", makePoints(forecast, datetest[6:]))
+	if err != nil {
+		panic(err)
+	}
+
+	// Save the plot to a PNG file.
+	if err := p.Save(10*vg.Inch, 4*vg.Inch, "plot.png"); err != nil {
+		panic(err)
+	}
 }
 
 func setupData(file string) {
@@ -57,17 +93,29 @@ func setupData(file string) {
 	csvReader := csv.NewReader(f)
 	csvData, err := csvReader.ReadAll()
 	for i := 1; i < len(csvData); i++ {
-		// 	if csvData[i][4] != "Wednesday" {
-		// 		continue
-		// 	}
-		val, _ := strconv.ParseFloat(csvData[i][2], 64)
+		layouts := "2006-01-02 15:04:05"
+		t, err := time.Parse(layouts, csvData[i][7])
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		val, _ := strconv.ParseFloat(csvData[i][8], 64)
 		//don't split randomly
 		if float64(i) < (float64(len(csvData)) * 0.9) {
 			vehiclestrain = append(vehiclestrain, val)
-			datetrain = append(datetrain, csvData[i][0])
+			datetrain = append(datetrain, float64(t.Unix()))
 		} else {
 			vehiclestest = append(vehiclestest, val)
-			datetest = append(datetest, csvData[i][0])
+			datetest = append(datetest, float64(t.Unix()))
 		}
 	}
+}
+
+func makePoints(data []float64, date []float64) plotter.XYs {
+	pts := make(plotter.XYs, len(data))
+	for i := range pts {
+		pts[i].X = date[i]
+		pts[i].Y = data[i]
+	}
+	return pts
 }
