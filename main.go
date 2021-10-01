@@ -16,6 +16,7 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/fxsjy/RF.go/RF/Regression"
 	"gonum.org/v1/plot"
 	"gonum.org/v1/plot/plotter"
 	"gonum.org/v1/plot/plotutil"
@@ -48,7 +49,7 @@ func main() {
 			vehiclestrain[i+2], vehiclestrain[i+3], vehiclestrain[i+4], vehiclestrain[i+5]}
 		train_targets[i] = vehiclestrain[i+6]
 	}
-	forest := BuildForest(train_inputs, train_targets, count, len(train_inputs), 1)
+	forest := Regression.BuildForest(train_inputs, train_targets, count, len(train_inputs), 1)
 	// fmt.Println(forest)
 
 	//testing
